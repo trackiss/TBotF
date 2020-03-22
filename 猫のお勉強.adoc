@@ -1,0 +1,149 @@
+= Cats 入門メモ
+trackiss
+0.0.1, 2020-03-22
+:br: pass:[ +]
+:doctype: article
+:icons: font
+:note-caption: :information_source:
+:syntax-highlighter: rouge
+:tip-caption: :bulb:
+:toc:
+
+== polymorphism
+
+多相性、多態性。
+
+ant: monomorphism (単相性) 
+
+複数の型を1つの関数 (及びそのほかの要素) へ適用できること。
+
+ここで、List[Int] の総和を求める sumInt 関数を一般化した sum 関数を考える。
+
+[source, scala]
+----
+def sumInt(xs: List[Int]): Int = xs.foldLeft(0)(_ + _)
+----
+
+{br}
+
+=== parametric polymorphism
+
+まずは、**parametric polymorphism**link:#note-parametric-polymorphism[^*^] のアプローチを取ってみる。
+
+{br}
+
+[[note-parametric-polymorphism]]
+.*_parametric polymorphism_*
+NOTE: パラメータ多相。 +
+任意の型変数を取り、具象型へ置き換える。多くの言語における **generics** (ジェネリック) に相当する。
+
+{br}
+
+[source, scala]
+----
+def sum[A](xs: List[A]): A = ???
+----
+
+これは定義できない。すべての具象型が加算演算を持つことを保証できないためだ。
+
+{br}
+
+=== subtype polymorphism
+
+これを解決するための方法の1つが、**subtype polymorphism**link:#note-subtype-polymorphism[^*^] である。
+
+{br}
+
+[[note-subtype-polymorphism]]
+.*_subtype polymorphism_*
+NOTE: 部分型多相、または inclusion polymorphism (包容多相)。 +
+型変数として取る具象型を、共通の基底型を持つ型のみに限定する。多くの言語では *convariance* (共変) を利用する。
+
+{br}
+
+加算演算の実装を強制させるための Additionable[A] を用意し、sum 関数の型パラメーターは Additionable[A] を基底型とする型のみを取るようにする。
+
+[source, scala]
+----
+sealed trait Additionable[A] {
+  def +(that: A): A
+}
+
+case class Quantity(value: Int) extends Additionable[Quantity] {
+  def +(that: Quantity): Quantity = Quantity(this.value + that.value)
+  def zero = Quantity(0)
+}
+
+def sum[A <: Additionable[A]](xs: List[A]): A = xs.reduceLeft(_ + _)
+----
+
+{br}
+
+=== ad-hoc polymorphism
+
+さて、この方法は、新規に型を作るときには問題ないが、既存の型にも適用させたいときにやや冗長である。
+
+もう一つの解決策として、**ad-hoc polymorphism**link:#note-ad-hoc-polymorphism[^*^]がある。
+
+{br}
+
+[[note-ad-hoc-polymorphism]]
+.*_ad-hoc polymorphism_*
+NOTE: アドホック多相。ad-hoc とは「臨機応変の」のような意味を指す。 +
+型によって自動的に実装を切り替える。多くの言語では *overload* (オーバーロード) や *implicit* としてこの機能を提供している。
+
+{br}
+
+ここで、sum 関数が取りうる型の基底型として、*monoid* を取り出してみたい。
+
+{br}
+
+==== monoid
+
+単系とも言う。
+
+ここで monoid とは、任意の型 A に対応する関数 *append* と単位元 *zero* の組み合わせであると定義する。
+
+*append* は、任意の型 A である2つの値を受け取り、任意の二項演算を行う A 型の関数である。 +
+`a1: A`、`a2: A`、`a3: A` と置いたとき、`append(append(a1, a2), a3) = append(a1, append(a2, a3))` を満たさなければならない (結合律)。
+
+*zero* は、任意の型 A である値 a とともに append に適用させたとき、その結果値が a と等価になる A 型の値である。 +
+`a: A` と置いたとき、`append(zero, a) = append(a, zero) = a` を満たさなければならない (単位元律)。
+
+{br}
+
+monoid の抽象を考えてみる。
+
+[source, scala]
+----
+trait Monoid[A] {
+  def append(a1: A, a2: A): A
+  def zero: A
+}
+----
+
+{br}
+
+monoid を使用して、ad-hoc polymorphism を考える。
+
+[source, scala]
+----
+trait Monoid[A] {
+  def append(a1: A, a2: A): A
+  def zero: A
+}
+
+case class Quantity(value: Int)
+
+object Monoid {
+  implicit val QuantityAddMonoid = new Monoid[Quantity] {
+    def append(a1: Quantity, a2: Quantity): Quantity = Quantity(a1.value + a2.value)
+    def zero: Quantity = Quantity(0)
+  }
+}
+
+def sum[A: Monoid](xs: List[A]): A = {
+  val m = implicitly[Monoid[A]]
+  xs.foldLeft(m.zero)(m.append)
+}
+----
