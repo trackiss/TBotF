@@ -81,7 +81,8 @@ def sum[A <: Additionable[A]](xs: List[A]): A = xs.reduceLeft(_ + _)
 
 === ad-hoc polymorphism
 
-subtype polymorphism を用いた多相化は、新規に型を作るときには問題ないが、既存の型にも適用させたいときにやや冗長である。加算演算を分離させるのが望ましい。
+subtype polymorphism を用いた多相化では、取りうるすべての型が1つの抽象に直接的に依存し、その実装を持たなければならない。 +
+そこで、加算演算を分離させることを考えてみる。
 
 その解決策として、**ad-hoc polymorphism**link:#note-ad-hoc-polymorphism[^*^]がある。
 
