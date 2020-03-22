@@ -1,6 +1,6 @@
 = Cats 入門メモ
 trackiss
-0.0.1, 2020-03-22
+0.1.0, 2020-03-22
 :br: pass:[ +]
 :doctype: article
 :icons: font
@@ -21,7 +21,7 @@ ant: monomorphism (単相性)
 
 [source, scala]
 ----
-def sumInt(xs: List[Int]): Int = xs.foldLeft(0)(_ + _)
+def sumInt(xs: List[Int]): Int = xs.fold(0)(_ + _)
 ----
 
 {br}
@@ -74,7 +74,7 @@ case class Quantity(value: Int) extends Additionable[Quantity] {
   def zero = Quantity(0)
 }
 
-def sum[A <: Additionable[A]](xs: List[A]): A = xs.reduceLeft(_ + _)
+def sum[A <: Additionable[A]](xs: List[A]): A = xs.reduce(_ + _)
 ----
 
 {br}
@@ -145,6 +145,39 @@ object Monoid {
 
 def sum[A: Monoid](xs: List[A]): A = {
   val m = implicitly[Monoid[A]]
-  xs.foldLeft(m.zero)(m.append)
+  xs.fold(m.zero)(m.append)
 }
 ----
+
+{br}
+
+=== foldLeft の一般化
+
+ついでに、List[A] についても一般化してみよう。 +
+そのためには、fold を一般化する必要がある。
+
+[source, scala]
+----
+trait Fold[F[_]] {
+  def fold[A](xs: F[A], acu: A, f: (A, A) => A): A
+}
+
+object Fold {
+  implicit val FoldList = new Fold[List] {
+    def fold[A](xs: List[A], acu: A, f: (A, A) => A): A = xs.foldLeft(acu)(f)
+  }
+}
+
+def sum[M[_]: Fold, A: Monoid](xs: M[A]): A = {
+  val m = implicitly[Monoid[A]]
+  val fl = implicitly[Fold[M]]
+  
+  fl.fold(xs, m.zero, m.append)
+}
+----
+
+{br}
+
+これら `Monoid[A]` や `Fold[F[_]]` は type class である。
+
+Cats は、これらに加え様々な type class を提供する。
