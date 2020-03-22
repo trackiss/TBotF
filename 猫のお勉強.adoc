@@ -1,6 +1,6 @@
 = Cats 入門メモ
 trackiss
-0.2.0, 2020-03-23
+0.2.1, 2020-03-23
 :br: pass:[ +]
 :doctype: article
 :icons: font
@@ -151,7 +151,7 @@ def sum[A: Monoid](xs: List[A]): A = {
 
 {br}
 
-=== foldLeft の一般化
+=== fold の一般化
 
 ついでに、List[A] についても一般化してみよう。 +
 そのためには、fold を一般化する必要がある。
