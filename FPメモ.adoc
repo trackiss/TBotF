@@ -1,6 +1,6 @@
 = FPメモ
 trackiss
-v0.0.1, 2020-03-27
+v0.0.4, 2020-03-27
 :br: pass:[ +]
 :doctype: article
 :icons: font
@@ -15,14 +15,16 @@ v0.0.1, 2020-03-27
 
 == 軽く圏論
 
-=== 圏の定義
+=== 圏
+
+==== 定義
 
 *圏* (_category_) は、*対象* (_object_) と**射**link:#note-morphism[^†^] (_morphism_) の組み合わせ。
 
 [[note-morphism]]
 NOTE: **矢** (_arrow_) ともいう。ほかにも、写像 (_map_)、関数 (_function_)、作用素 (_operator_) などと呼ばれることもある。
 
-=== 対象と射
+==== 対象と射
 
 圏 𝑪 におけるすべての対象を総称して Ob(𝑪) という。 +
 また、圏 𝑪link:#tip-category-font[^†^] におけるすべての射を総称して Hom(𝑪)link:#note-hom[^†^] という。
@@ -42,14 +44,14 @@ NOTE: **ソース** (_source_) ともいう。
 [[note-codomain]]
 NOTE: **ターゲット** (_target_) ともいう。
 
-=== ホム集合
+==== ホム集合
 
 1つの圏における射 𝑓: 𝐴 -> 𝐵 は1つとは限らない。そうした射 𝑓: 𝐴 -> 𝐵 の集合を**ホム集合**link:#note-hom-set[^†^] (_hom-set_) といい、Hom~𝑪~(𝐴 -> 𝐵) と表す。
 
 [[note-hom-set]]
 NOTE: **ホム類** (_hom-class_) ともいう。もとより対象や射も圏における類である。
 
-=== 射の合成と結合則
+==== 射の合成と結合則
 
 射 𝑓: 𝐴 -> 𝐵 と射 𝑔: 𝐵 -> 𝐶 のように、射 𝑓 の終域と射 𝑔 の始域が等しいとき、2つの射を**合成** (_compose_) することができる。これを 𝑔 ∘ 𝑓link:#note-function-compose[^†^] と表す。
 
