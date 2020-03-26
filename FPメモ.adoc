@@ -1,0 +1,69 @@
+= FPメモ
+trackiss
+v0.0.1, 2020-03-27
+:br: pass:[ +]
+:doctype: article
+:icons: font
+:note-caption: :information_source:
+:syntax-highlighter: rouge
+:tip-caption: :bulb:
+:toc:
+
+== これは何？
+
+文章化させるのはすごくコストがかかると思ったので、とりあえずメモにまとめる。
+
+== 軽く圏論
+
+=== 圏の定義
+
+*圏* (_category_) は、*対象* (_object_) と**射**link:##note-morphism[^*^] (_morphism_) の組み合わせ。
+
+[[note-morphism]]
+NOTE: **矢** (_arrow_) ともいう。ほかにも、写像 (_map_)、関数 (_function_)、作用素 (_operator_) などと呼ばれることもある。
+
+=== 対象と射
+
+圏 𝑪 におけるすべての対象を総称して Ob(𝑪) という。 +
+また、圏 𝑪link:#tip-category-font[^*^] におけるすべての射を総称して Hom(𝑪)link:#note-hom[^*^] という。
+
+ここで、Ob (𝑪) である対象 𝐴 と 𝐵 があったとき、𝐴 から 𝐵 への対応づけを射といい、𝑓: 𝐴 -> 𝐵 と表す。このとき、射 𝑓 における 𝐴 は**始域**link:#note-domain[^*^] (_domain_) といい、 𝐵 は**終域**link:#note-codomain[^*^] (_codomain_) という。
+
+[[tip-category-font]]
+NOTE: 圏を表す文字は、𝑪 のような太字のイタリック体であったり、𝓒 のような花文字を用いたりする。
+
+[[note-hom]]
+NOTE: **準同型** (homomorphism) の略。準同型については今回は解説しない。 +
+morphism になぞらえて Mor(𝑪) と表記する場合もある。
+
+[[note-domain]]
+NOTE: **ソース** (_source_) ともいう。
+
+[[note-codomain]]
+NOTE: **ターゲット** (_target_) ともいう。
+
+=== ホム集合
+
+1つの圏における射 𝑓: 𝐴 -> 𝐵 は1つとは限らない。そうした射 𝑓: 𝐴 -> 𝐵 の集合を**ホム集合**link:#note-hom-set[^*^] (_hom-set_) といい、Hom~𝑪~(𝐴 -> 𝐵) と表す。
+
+[[note-hom-set]]
+NOTE: **ホム類** (_hom-class_) ともいう。もとより対象や射も圏における類である。
+
+=== 射の合成と結合則
+
+射 𝑓: 𝐴 -> 𝐵 と射 𝑔: 𝐵 -> 𝐶 のように、射 𝑓 の終域と射 𝑔 の始域が等しいとき、2つの射を**合成** (_compose_) することができる。これを 𝑔 ∘ 𝑓link:#note-function-compose[^*^] と表す。
+
+すべての射は**結合則** (_associativity_) を満足する必要がある。結合則とは、たとえば3つの射 𝑓: 𝐴 -> 𝐵、𝑔: 𝐵 -> 𝐶、ℎ: 𝐶 -> 𝐷 があったとして、ℎ ∘ (𝑔 ∘ 𝑓) と (ℎ ∘ 𝑔) ∘ 𝑓link:#note-associativity[^*^] が等価となることである。
+
+[[note-functiom-compose]]
+NOTE: これは関数の合成と同様に `g(f())` のように実装される。 +
+Scala では、これは `g compose f` のような実装となる。なお、これを正順で書くことができる `f andThen g` も提供されている。
+
+[[note-associativity]]
+NOTE: いずれも変形すると `h(g(f()))` になる。
+
+=== 恒等射
+
+すべての対象は、**恒等射** (_identity morphism_) という自己を指す射を持っている。恒等射は 𝑒: 𝐴 -> 𝐴 によって表される。
+
+すべての恒等射は**単位則** (_identity_) を満足する必要がある。単位則とは、たとえば対象 𝐴 に対応する恒等射 𝑒~𝐴~: 𝐴 -> 𝐴 と 任意の射 𝑓: 𝐴 -> 𝐵 があったとして、𝑒~𝐴~ ∘ 𝑓 と 𝑒~𝐴~ が等価となり、また 𝑓 ∘ 𝑒~𝐴~ と 𝑒~𝐴~ が等価となることである。
