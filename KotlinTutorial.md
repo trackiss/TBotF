@@ -1,5 +1,7 @@
 ## Kotlin Tutorial
 
+---
+
 ### IntelliJ IDEA のインストール
 
 [こちら](https://www.jetbrains.com/ja-jp/idea/) から、IntelliJ IDEA Community をダウンロードしてインストール。
@@ -9,12 +11,16 @@
 日本語化したいなら、Japanese Language Pack EAP プラグインをインストールする。まだアーリーアクセスなので完全ではないが、公式の日本語訳である。  
 その他のプラグインは、Rainbow Brackets や Material Theme などがおすすめ。Rainbow Brackets は、ペアとなっている丸括弧や波括弧を色分けしてくれる。Material Theme は、IDE の見た目をかっこよくしてくれる。別になくてもいい。
 
+---
+
 ### 新規プロジェクトの作成
 
 "新規プロジェクト" をクリックしたら、左のペインから "Gradle" を選択。  
 "Java" のチェックを外し、"Kotlin/JVM" にチェックを入れ "次" へ。
 
 任意のプロジェクト名を入力して "完了"。
+
+---
 
 ### Hello, World!
 
@@ -30,6 +36,8 @@ Kotlin は、関数などをクラスに含めず記述することができる�
 
 関数は `fun 関数名(引数名: 引数の型名): 関数の型名 { 処理 }` という構文になっている。  
 返り値がない場合は、`void` ではなく `Unit` 型で示す。
+
+---
 
 ### 変数
 
@@ -56,6 +64,8 @@ a = 20  // OK!
 
 変数名は、`myVariable`、`helloWorld` のように、camelCase で記述する (先頭の単語は小文字、以降の単語は大文字で始める)。
 
+---
+
 ### 定数
 
 コンパイル時に解決される定数を使う場合は、`const val` キーワードを使って宣言する。
@@ -65,6 +75,8 @@ const val MY_CONSTANTS = "Hello, World!"
 ```
 
 定数名は、`MY_CONSTANTS`、`HELLO_WORLD` のように、CONSTANT_CASE で記述する (すべて大文字、単語はアンダースコアで区切る)。
+
+---
 
 ### Nullable
 
@@ -79,7 +91,7 @@ val b: String? = null // OK!
 
 Nullable な型は、同じ Nullable でない型と互換性がない。たとえば、String 型と String? 型はまったくの別物として扱われる。
 
-次のように、Nullable なオブジェクトのプロパティやメソッドを呼び出すことはできない。
+次のように、Nullable なオブジェクトのフィールドやメソッドを呼び出すことはできない。
 
 ```kotlin
 val a: String = "Hello"
@@ -89,8 +101,8 @@ println(a.length) // OK!
 println(b.length) // Compile Error!
 ```
 
-Nullable なオブジェクトのプロパティやメソッドを呼び出すには、セーフタイプ演算子 `?.` を使用する。  
-`?.` を使って呼び出されたプロパティやメソッドは、もし値が null だった場合は、評価されずにそのまま null を返す。ほかの言語における `map()` に相当する。
+Nullable なオブジェクトのフィールドやメソッドを呼び出すには、セーフタイプ演算子 `?.` を使用する。  
+`?.` を使って呼び出されたフィールドやメソッドは、もし値が null だった場合は、評価されずにそのまま null を返す。ほかの言語における `map()` に相当する。
 
 ```kotlin
 val a: String = "Hello"
@@ -123,6 +135,8 @@ println(a!!.length) // OK!
 println(b!!.length) // Runtime Error!
 ```
 
+---
+
 ### List
 
 配列を使う場合は、List コレクションを使用する。  
@@ -131,6 +145,8 @@ println(b!!.length) // Runtime Error!
 ```kotlin
 val list = listOf("Apple", "Orange", "Grape")
 ```
+
+---
 
 ### 関数
 
@@ -159,6 +175,8 @@ greet()             // "Hello!"
 
 関数名は、`myFunction()`、`helloWorld()` のように、camelCase で記述する (先頭の単語は小文字、以降の単語は大文字で始める)。
 
+---
+
 ### if 式
 
 Kotlin では、ほとんどの制御構文が文 (statement) ではなく式 (expression) であり、返り値を持つ。
@@ -178,6 +196,8 @@ println(
 )
 ```
 
+---
+
 ### for
 
 Kotlin の for は、式ではない。  
@@ -192,23 +212,25 @@ for (i in 0..9)
     print(i)
 ```
 
-### foreach と map
+---
+
+### forEach と map
 
 iterable (for で回せる) なオブジェクトの各要素を順番に処理したい場合は、for よりも適切な方法がある。
 
-foreach は、iterable の各要素を利用して、任意の処理を行うためのメソッドである。  
+forEach は、iterable の各要素を利用して、任意の処理を行うためのメソッドである。  
 通常のラムダ式のようにローカル変数を命名することもできるし、現在の要素を `it` キーワードによって取得することもできる。
 
 ```kotlin
 val items = listOf(4, 7, 2, 8)
 
 // "4728"
-items.foreach { item ->
+items.forEach { item ->
     print(item)
 }
 
 // "4728"
-items.foreach { print(it) }
+items.forEach { print(it) }
 ```
 
 map は、iterable の各要素へ任意の関数を適用し、変換するためのメソッドである。
@@ -219,10 +241,14 @@ val items = listOf(4, 7, 2, 8)
 // "5839"
 items
     .map { it + 1 }
-    .foreach { print(it) }
+    .forEach { print(it) }
 ```
 
 このように、ラムダ式を渡すことができる関数を高階関数 (hyper-kind function) という。ほかにも、fold などの便利な高階関数が多数用意されている。
+
+forEach や map などを利用したループ処理は遅いという批判があるが、Kotlin ではこれらの処理はインライン展開されるため、高速である。
+
+---
 
 ### パターン マッチング
 
@@ -274,13 +300,70 @@ println(
 
 ほかにもいろいろな分岐条件を指定できる。
 
+---
+
+### 型システム
+
+Kotlin の基底型 (basic types) は、基本的に Java のそれに準拠する。
+
+Java では、もともとは `int` などの基底型のみがプリミティブ型として特別扱いを受けていたのだが、これらをそのままオブジェクト指向に取り入れることができなかったため、ラッパーとして `Integer` などのオブジェクトが追加された。  
+このため、たとえば、整数型の変数を宣言するときは `int a = 0;` と書けるが、整数型の List を宣言するときは `List<Integer>` と書かなければならないなどのギャップが生じてしまった。
+
+いっぽう、Kotlin ではすべての型が純粋なオブジェクトであるため、このような問題は起こらない。
+
+実は Java の配列もプリミティブなものであるのだが、それも `Array<T>` 型としてラップされているので安心。もっとも、通常は List を使うべきである。
+
+すべての Non-null な型およびクラスは、`Any` 型を暗黙的に継承する。  
+また、すべての Nullable な型およびクラスは、`Any?` 型を暗黙的に継承する。
+
+これとは対照的に、すべての Non-null な型およびクラスは、`Nothing` 型へ暗黙的に派生する。  
+また、すべての Nullable な型およびクラスは、`Nothing?` 型へ暗黙的に派生する。
+
+---
+
+### Nothing の必要性
+
+俗にトップ タイプと呼ばれる Any はともかく、なぜボトム タイプである Nothing が必要なのかについて。
+
+たとえば、2つの整数 a と b を受け取り、a を b で除算する関数を考えてみる。ここで、b が0であった場合は、例外をスローする。
+
+```kotlin
+fun devide(a: Int, b: Int): Int =
+    if (b != 0)
+        a / b
+    else
+        throw ArithmeticException()
+```
+
+devide() は Int 型の値を返すと明記してあるのだから、本来であれば、返しうるすべての値が Int かその派生型でなければコンパイルは通らないはずである。  
+実際、Java でこれと同じコードを書いた場合は、例外をスローする経路は特別に型チェックをパスするようになっている。
+
+しかし、Kotlin にはすべての派生型である Nothing がある。  
+Java で生じた問題を解決するために、Kotlin の throw 式は Nothing を返すようになっている。Nothing は Int の派生型でもあるので、これならば型システム上なにも問題はない。
+
+また、たとえば「関数名や引数、返り値の型などは決まっているがまだ実装していない、しかしテストのためにとりあえずコンパイルを通したい」というようなケースが往々にして存在する。  
+Kotlin では、このケースに対する自然な解決策として `TODO()` メソッドを提供する。
+
+```kotlin
+// OK!
+fun placeholderFunc(a: Int, b: String): Int = TODO()
+
+// Runtime Error!
+val s = placeholderFunc(10, "ABC")
+```
+
+TODO() は、常に Nothing を返すメソッドである。Nothing はあらゆる型の派生型であるので、とりあえずこれを入れておけば、是非はともかく、コンパイルは通すことができる。  
+当然だが、例にもあるように、この関数を呼び出そうとすると NotImplementedError がスローされるので注意。
+
+---
+
 ### クラス
 
 Kotlin の場合、`class クラス名 constructor(va(l|r) パラメーター名1: パラメーターの型1, ...)` のようにしてプライマリ コンストラクターとそのパラメーターを定義できる。ここで、一部のケースを除いて `constructor` キーワードは省略できる。  
 プロパティの初期化以外にやりたいことがある場合、`init` ブロック内に処理を記述できる。
 
-プロパティやメソッドは、`インスタンス名.プロパティ`、`インスタンス名.メソッド()` のようにしてアクセスする。  
-アクセス修飾子を指定しなかった場合、すべてのプロパティやメソッドは public 扱いとなる。
+プロパティやメソッドは、`インスタンス名.フィールド`、`インスタンス名.メソッド()` のようにしてアクセスする。  
+アクセス修飾子を指定しなかった場合、すべてのフィールドやメソッドは public 扱いとなる。
 
 インスタンスの初期化時、Java などのように `new` キーワードは書かない。
 
@@ -324,9 +407,15 @@ class Sample(val a: String) {
 }
 ```
 
+クラス名は、`MyClass`、`HelloWorld` のように、PascalCase で記述する (すべての単語を大文字で始める)。
+
+---
+
+### コンパニオン オブジェクト
+
 Kotlin には static キーワードがない。かわりに、コンパニオン オブジェクトを使用する。
 
-`companion object` ブロック内に宣言されたプロパティやメソッドは、`クラス名.プロパティ`、`クラス名.メソッド()` のようにアクセスでき、すべてのインスタンスで共有される。
+`companion object` ブロック内に宣言されたフィールドやメソッドは、`クラス名.フィールド`、`クラス名.メソッド()` のようにアクセスでき、すべてのインスタンスで共有される。
 
 ```kotlin
 class Sample(val a: String) {
@@ -339,7 +428,7 @@ val sample = Sample("Hello, ")
 println(sample.a + Sample.b)  // "Hello, World!"
 ```
 
-コンパニオン オブジェクトからであれば private なプロパティおよびメソッドにもアクセスできる。  
+コンパニオン オブジェクトからであれば private なフィールドおよびメソッドにもアクセスできる。  
 これを利用して、たとえば受け取った値が正常なものであるかどうかの検証などを行ってからインスタンスを返すなど、インスタンス生成前に任意の処理をはさむことができる。  
 このような手法をファクトリー パターンという。
 
@@ -388,7 +477,42 @@ val posNum1 = PositiveNum(-10)
 val posNum2 = PositiveNum(10)
 ```
 
-クラス名は、`MyClass`、`HelloWorld` のように、PascalCase で記述する (すべての単語を大文字で始める)。
+---
+
+### 継承 (WIP)
+
+当然、Kotlin はクラスの継承をサポートしている。  
+任意のクラスを継承するには、クラス宣言のうしろに `: クラス名()) を記述する。
+
+```kotlin
+class Fruit()
+
+class 
+```
+
+---
+
+### シングルトン オブジェクト
+
+「アプリケーション中に1つしかインスタンスを持てないクラス」を実現する手法をシングルトン パターン (singleton pattern) という。  
+シングルトンなクラスは、static class (Kotlin では宣言できないが) とは違い、継承することができ、また、継承されることができる。すなわち、インターフェースを実装することもできるし、抽象メソッドを持つこともできる。
+
+シングルトン パターンは static class よりもコード量がかなり増えるという欠点があったが、Kotlin では、`object` キーワードを使ってシングルトンなクラスを宣言できる。
+
+```kotlin
+object Sample {
+    val message: String = "Hello!"
+
+    fun greet(): Unit =
+        println(message)
+}
+
+val sample = Sample()   // Compile Error!
+println(Sample.message) // "Hello!"
+Sample.greet()          // "Hello!"
+```
+
+---
 
 ### data class
 
@@ -416,7 +540,9 @@ data class Sample(val a: Int)
 
 `componentN()` は、各パラメーターにアクセスするためのアクセサー (1つ目のパラメーターは `component1()`、2つ目のパラメーターは `component2()`...) を提供する。
 
-これらのメソッドが有効なのはコンストラクターのパラメーターに対してだけであり、その他のプロパティは無視される。
+これらのメソッドが有効なのはコンストラクターのパラメーターに対してだけであり、その他のフィールドは無視される。
+
+---
 
 ### enum class
 
@@ -436,7 +562,7 @@ val gender: Gender = Gender.FEMALE
 
 コンストラクターと各パラメーターに割り当てる値を指定することで、ほかの型の値へ変換することもできる。
 
-また、enum class そのものは、プロパティやメンバを持つ通常のクラスのように使うことができる。加えて、abstract なメソッドを定義して、各パラメーターごとにオーバーライドすることもできる。
+また、enum class そのものは、フィールドやメンバを持つ通常のクラスのように使うことができる。加えて、abstract なメソッドを定義して、各パラメーターごとにオーバーライドすることもできる。
 
 ```kotlin
 enum class Gender(value: Int) {
@@ -463,4 +589,4 @@ gender.print()              // "Female"
 println(gender.rawValue())  // "2"
 ```
 
-列挙体では、enum class そのものは PascalCase、各パラメーターは CONSTANCE_CASE で命名する。
+列挙体では、enum class そのものは通常のクラスのように PascalCase、各フィールドは CONSTANCE_CASE で命名する。
