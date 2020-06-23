@@ -222,7 +222,7 @@ items
     .foreach { print(it) }
 ```
 
-このように、ラムダ式を渡す関数を高階関数 (hyper-kind function) という。ほかにも、fold などの便利な高階関数が多数用意されている。
+このように、ラムダ式を渡すことができる関数を高階関数 (hyper-kind function) という。ほかにも、fold などの便利な高階関数が多数用意されている。
 
 ### パターン マッチング
 
@@ -243,7 +243,7 @@ println(
 )
 ```
 
-`when ()` の中でのみ使用できるローカル変数を宣言することもできる。
+`when ()` の中で、その when 式内でのみ使用できるローカル変数を宣言することもできる。
 
 ```kotlin
 println(
@@ -322,7 +322,9 @@ val sample = Sample("Hello, ")
 println(sample.a + Sample.b)  // "Hello, World!"
 ```
 
-コンパニオン オブジェクトからであれば private なプロパティおよびメソッドにもアクセスできるため、先述した private なコンストラクターと組み合わせることで、たとえば受け取った値が正常なものであるかどうかの検証など、インスタンス生成前に任意の処理をはさむことができる。これをファクトリー パターンという。
+コンパニオン オブジェクトからであれば private なプロパティおよびメソッドにもアクセスできる。  
+これを利用して、たとえば受け取った値が正常なものであるかどうかの検証などを行ってからインスタンスを返すなど、インスタンス生成前に任意の処理をはさむことができる。  
+このような手法をファクトリー パターンという。
 
 ```kotlin
 class PositiveNum private constructor(val value: Int) {
@@ -349,7 +351,7 @@ val posNum3 = PositiveNum.genInstance(10)
 Kotlin では、`operator` キーワードを使用してメソッドを定義することで、+ や -、& などの演算子をオーバーロードすることができる。  
 なかでも `invoke()` 演算子は特殊で、`インスタンス名()` のようにして呼び出せるメソッドを定義できる。
 
-この invoke() をコンパニオン オブジェクト内に定義してやれば、ファクトリー メソッドをまるでコンストラクターのように見せかけることができる。
+この invoke() をコンパニオン オブジェクト内に定義することで、ファクトリー メソッドをまるでコンストラクターのように見せかけることができる。
 
 ```kotlin
 class PositiveNum private constructor(val value: Int) {
@@ -392,13 +394,12 @@ data class Sample(val a: Int)
 `toString()` は、そのインスタンスの文字列表現を返す。  
 通常の `toString()` は `クラス名@ハッシュ値` の形式で表せられるが、データ クラスの `toString()` は、`クラス名(パラメーター1=値, パラメーター2=値, ...)` という形式になる。
 
-`copy()` は、そのインスタンスのパラメーターを維持したインスタンスのコピーを提供する。また、任意のパラメーターを渡すことで、そのパラメーターのみを更新したコピーが得られる。
+`copy()` は、そのインスタンスのパラメーターを維持したインスタンスのコピーを提供する。また、任意のパラメーターを渡すことで、そのパラメーターのみを更新したコピーが得られる。  
+このメソッドの存在により、データ クラスにおいては、コンストラクターを完全に隠ぺいすることはできない。
 
 `componentN()` は、各パラメーターにアクセスするためのアクセサー (1つ目のパラメーターは `component1()`、2つ目のパラメーターは `component2()`...) を提供する。
 
 これらのメソッドが有効なのはコンストラクターのパラメーターに対してだけであり、その他のプロパティは無視される。
-
-`copy()` メソッドの存在により、データ クラスにおいては、コンストラクターを完全に隠ぺいすることはできない。
 
 ### enum class
 
@@ -412,28 +413,33 @@ enum class Gender {
     FEMALE,
     OTHER
 }
+
+val gender: Gender = Gender.FEMALE
 ```
 
-コンストラクターと各パラメーターに割り当てる値を指定することで、ほかの型と相互に変換することもできる。  
+コンストラクターと各パラメーターに割り当てる値を指定することで、ほかの型の値へ変換することもできる。  
 加えて、abstract なメソッドを定義して、各パラメーターごとにオーバーライドすることもできる。
 
 ```kotlin
 enum class Gender(value: Int) {
     MALE(1) {
         override fun print(): Unit =
-            println("MALE")
+            println("Male")
     },
 
     FEMALE(2) {
         override fun print(): Unit =
-            println("FEMALE")
+            println("Female")
     },
 
     OTHER(9) {
         override fun print(): Unit =
-            println("OTHER")
+            println("Other")
     },
 
     abstract fun print(): Unit
 }
+
+val gender = Gender(2)
+gender.print()  // "Female"
 ```
