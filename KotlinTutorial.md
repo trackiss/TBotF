@@ -1,5 +1,9 @@
 ## Kotlin Tutorial
 
+身内向け。Java が少し書ける程度の知識を要求します。
+
+都合上、あとで解説する構文が先に登場することがありますのでご了承ください。
+
 ---
 
 ### IntelliJ IDEA のインストール
@@ -137,6 +141,33 @@ println(b!!.length) // Runtime Error!
 
 ---
 
+### 標準入出力
+
+先ほどから多用しているが、念のため。
+
+標準出力には、`print()` または `println()` メソッドを使用する。引数として、任意の文字列リテラルか、任意のオブジェクトを渡す。オブジェクトが渡された場合、`toString()` の内容を出力する。
+
+```kotlin
+// "Hello, World!"
+print("Hello, ")
+print("World!")
+
+// "Hello, World!"
+println("Hello, World!")
+```
+
+標準入力には、`readLine()` メソッドを使用する。Java の BufferedReader を使用しているため、Nullableである。  
+整数などが欲しいのなら `toInt()` するなり、空白で区切りたいのなら `split(' ')` するなり。
+
+いろいろ書き方はあるが、もっとも安全なものは次のとおり。
+
+```kotlin
+val a: String = readLine() ?: ""
+val b: Int = readLine()?.toInt() ?: ""
+```
+
+---
+
 ### List
 
 配列を使う場合は、List コレクションを使用する。  
@@ -242,6 +273,15 @@ val items = listOf(4, 7, 2, 8)
 items
     .map { it + 1 }
     .forEach { print(it) }
+```
+
+また、List の標準入力による初期化なども次のようにして可能。
+
+```kotlin
+val list =
+    readLine()
+        ?.split(' ')
+        ?.map { it.toInt() }
 ```
 
 このように、ラムダ式を渡すことができる関数を高階関数 (hyper-kind function) という。ほかにも、fold などの便利な高階関数が多数用意されている。
