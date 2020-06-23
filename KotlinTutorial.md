@@ -276,7 +276,7 @@ println(
 
 ### クラス
 
-Kotlin の場合、関数の引数のようにしてコンストラクターとそのパラメーターを定義できる。  
+Kotlin の場合、`class クラス名 constructor(va(l|r) パラメーター名1: パラメーターの型1, ...)` のようにしてプライマリ コンストラクターとそのパラメーターを定義できる。ここで、一部のケースを除いて `constructor` キーワードは省略できる。  
 プロパティの初期化以外にやりたいことがある場合、`init` ブロック内に処理を記述できる。
 
 プロパティやメソッドは、`インスタンス名.プロパティ`、`インスタンス名.メソッド()` のようにしてアクセスする。  
@@ -285,7 +285,7 @@ Kotlin の場合、関数の引数のようにしてコンストラクターと�
 インスタンスの初期化時、Java などのように `new` キーワードは書かない。
 
 ```kotlin
-class Sample(val a: String, private val b: String, val c: String = "C") {
+class Sample constructor(val a: String, private val b: String, val c: String = "C") {
     init {
       println("インスタンスが生成されたよ！")
     }
@@ -301,10 +301,27 @@ println(sample.c)             // "C"
 println(sample.printAll())    // "ABC"
 ```
 
-コンストラクターそのものを private にすることもできる。この場合、コンストラクターを通じて初期化することはできなくなる。
+プライマリ コンストラクターそのものを private にすることもできる。この場合、プライマリ コンストラクターを通じて初期化することはできなくなる。また、`constructor` キーワードを省略することはできない。
 
 ```kotlin
 class Sample private constructor(val a: String, val b: String)
+```
+
+明示的にセカンダリ コンストラクターを宣言することもできる。セカンダリ コンストラクターは `constructor()` メソッドとして定義され、オーバーロードが可能である。
+
+```kotlin
+class Sample(val a: String) {
+    val b: String
+    val c: String
+
+    constructor(b: Int) {
+        b = b.toString()
+    }
+
+    constructor(c: Double) {
+        c = c.toString()
+    }
+}
 ```
 
 Kotlin には static キーワードがない。かわりに、コンパニオン オブジェクトを使用する。
@@ -417,8 +434,9 @@ enum class Gender {
 val gender: Gender = Gender.FEMALE
 ```
 
-コンストラクターと各パラメーターに割り当てる値を指定することで、ほかの型の値へ変換することもできる。  
-加えて、abstract なメソッドを定義して、各パラメーターごとにオーバーライドすることもできる。
+コンストラクターと各パラメーターに割り当てる値を指定することで、ほかの型の値へ変換することもできる。
+
+また、enum class そのものは、プロパティやメンバを持つ通常のクラスのように使うことができる。加えて、abstract なメソッドを定義して、各パラメーターごとにオーバーライドすることもできる。
 
 ```kotlin
 enum class Gender(value: Int) {
@@ -440,6 +458,9 @@ enum class Gender(value: Int) {
     abstract fun print(): Unit
 }
 
-val gender = Gender(2)
-gender.print()  // "Female"
+val gender = Gender.FEMALE
+gender.print()              // "Female"
+println(gender.rawValue())  // "2"
 ```
+
+列挙体では、enum class そのものは PascalCase、各パラメーターは CONSTANCE_CASE で命名する。
