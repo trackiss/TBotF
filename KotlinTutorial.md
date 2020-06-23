@@ -112,7 +112,8 @@ println(a.length ?: -1) // "5"
 println(b.length ?: -1) // "-1"
 ```
 
-`!!` 演算子は、`Nullableオブジェクト!!` のようにして使用する。これは積極的に使うべきでない手法で、強制的に Nullable を Non-null へ変換する。もし null が入っていた場合、NullPointerException がスローされる。他の言語における `get()` に相当する。
+`!!` 演算子は、`Nullableオブジェクト!!` のようにして使用する。これは積極的に使うべきでない手法で、強制的に Nullable を Non-null へ変換する。  
+もし null が入っていた場合、NullPointerException がスローされる。他の言語における `get()` に相当する。
 
 ```kotlin
 val a: String? = "Hello"
@@ -186,8 +187,9 @@ for は、`for (変数 in イテレーター)` というような、いわゆる
 ある回数繰り返したい場合は、`0..9` のように Range オブジェクトを生成するのが一般的。
 
 ```kotlin
+// "0123456789"
 for (i in 0..9)
-    print(i)    // "0123456789"
+    print(i)
 ```
 
 ### foreach と map
@@ -214,7 +216,10 @@ map は、iterable の各要素へ任意の関数を適用し、変換するた�
 ```kotlin
 val items = listOf(4, 7, 2, 8)
 
-print(items.map { it + 1 })  // "5839"
+// "5839"
+items
+    .map { it + 1 }
+    .foreach { print(it) }
 ```
 
 このように、ラムダ式を渡す関数を高階関数 (hyper-kind function) という。ほかにも、fold などの便利な高階関数が多数用意されている。
