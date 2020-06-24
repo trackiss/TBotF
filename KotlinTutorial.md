@@ -141,6 +141,108 @@ println(b!!.length) // Runtime Error!
 
 ---
 
+### 型システム
+
+Kotlin の基底型 (basic types) は次のとおり。
+
+| Name    | Desciption         | Literal              |
+| :------ | :----------------- | :------------------- |
+| Byte    | 8bit 符号付き整数  | `123 as Byte`        |
+| Short   | 16bit 符号付き整数 | `123 as Short`       |
+| Int     | 32bit 符号付き整数 | `123`                |
+| Long    | 64bit 符号付き整数 | `123L`, `2147483648` |
+| Float   | 32bit 浮動小数点数 | `0.123f`             |
+| Double  | 64bit 浮動小数点数 | `0.123`              |
+| Boolean | 論理値             | `true`, `false`      |
+| Char    | Unicode 文字       | `'A'`                |
+| String  | Unicode 文字列     | `"ABC"`              |
+
+整数リテラルでは、2進表記 (`0bXXXX`) と16進表記 (`0xXXXX`) が使用できる。また、途中のアンダースコアは無視されるため、区切り文字として使用できる。  
+浮動小数点数リテラルでは、指数表記 (`X.XXeXX`) が使用できる。
+
+```kotlin
+val dec: Int = 1_234_567
+val bin: Int = 0b00010010_11010110_10000111
+val hex: Int = 0x12_D6_87
+
+val sc: Double = 0.00123
+val ex: Double = 1.23e3
+```
+
+文字リテラル、文字列リテラルでは、Java と同様にエスケープシーケンスをサポートする。
+
+文字列リテラルでは、通常の文字列である `"ABC"` のほか、生文字列 (エスケープシーケンスなし、改行なども含まれる) である `"""ABC"""` をサポートする。  
+また、文字列テンプレート (ほかの言語でいう文字列補間) もサポートする。
+
+```kotlin
+// ABC
+// DEF
+// G
+println("ABC\nDEF\nG")
+
+// ABC
+// DEF
+// G
+println("""ABC
+DEF
+G""")
+
+val a = 1
+val b = 2
+
+// 1 + 2 = 3
+println("$a + $b = ${ a + b }")
+```
+
+Java では、もともとは `int` などの基底型のみがプリミティブ型として特別扱いを受けていたのだが、これらをそのままオブジェクト指向に取り入れることができなかったため、ラッパーとして `Integer` などのオブジェクトが追加された。  
+このため、たとえば、整数型の変数を宣言するときは `int a;` と書けるが、整数型の List を宣言するときは `List<Integer> a;` と書かなければならないなどのギャップが生じてしまった。
+
+いっぽう、Kotlin ではすべての型が純粋なオブジェクトであるため、このような問題は起こらない。
+
+すべての Non-null な型およびクラスは、`Any` 型を暗黙的に継承する。  
+また、すべての Nullable な型およびクラスは、`Any?` 型を暗黙的に継承する。
+
+これとは対照的に、すべての Non-null な型およびクラスは、`Nothing` 型へ暗黙的に派生する。  
+また、すべての Nullable な型およびクラスは、`Nothing?` 型へ暗黙的に派生する。
+
+---
+
+### Nothing の必要性
+
+俗にトップ タイプと呼ばれる Any はともかく、なぜボトム タイプである Nothing が必要なのかについて。
+
+たとえば、2つの整数 a と b を受け取り、a を b で除算する関数を考えてみる。ここで、b が0であった場合は、例外をスローする。
+
+```kotlin
+fun devide(a: Int, b: Int): Int =
+    if (b != 0)
+        a / b
+    else
+        throw ArithmeticException()
+```
+
+devide() は Int 型の値を返すと明記してあるのだから、本来であれば、返しうるすべての値が Int かその派生型でなければコンパイルは通らないはずである。  
+実際、Java でこれと同じコードを書いた場合は、例外をスローする経路は特別に型チェックをパスするようになっている。
+
+しかし、Kotlin にはすべての派生型である Nothing がある。  
+Java で生じた問題を解決するために、Kotlin の throw 式は Nothing を返すようになっている。Nothing は Int の派生型でもあるので、これならば型システム上なにも問題はない。
+
+また、たとえば「関数名や引数、返り値の型などは決まっているがまだ実装していない、しかしテストのためにとりあえずコンパイルを通したい」というようなケースが往々にして存在する。  
+Kotlin では、このケースに対する自然な解決策として `TODO()` メソッドを提供する。
+
+```kotlin
+// OK!
+fun placeholderFunc(a: Int, b: String): Int = TODO()
+
+// Runtime Error!
+val s = placeholderFunc(10, "ABC")
+```
+
+TODO() は、常に Nothing を返すメソッドである。Nothing はあらゆる型の派生型であるので、とりあえずこれを入れておけば、是非はともかく、コンパイルは通すことができる。  
+当然だが、例にもあるように、この関数を呼び出そうとすると NotImplementedError がスローされるので注意。
+
+---
+
 ### 標準入出力
 
 先ほどから多用しているが、念のため。
@@ -159,22 +261,57 @@ println("Hello, World!")
 標準入力には、`readLine()` メソッドを使用する。Java の BufferedReader を使用しているため、Nullableである。  
 整数などが欲しいのなら `toInt()` するなり、空白で区切りたいのなら `split(' ')` するなり。
 
-いろいろ書き方はあるが、もっとも安全なものは次のとおり。
+いろいろ書き方はあるが、もっとも安全なものは次のとおり。`toInt()` できない文字が含まれていた場合はどうしようもないが。
 
 ```kotlin
 val a: String = readLine() ?: ""
-val b: Int = readLine()?.toInt() ?: ""
+
+val b: Int =
+    readLine()
+        ?.toInt()
+        ?: 0
 ```
 
 ---
 
-### List
+### コレクション
 
-配列を使う場合は、List コレクションを使用する。  
-不変な List は `listOf()` メソッドを、可変な List は `mutableListOf()` メソッドを使って初期化できる。
+Kotlin には、主に4つのコレクションが存在する。  
+これらは不変であり、可変なコレクションは `mutableXXX` クラスとして別に定義されている。
+
+`Array<T>` は、Java のプリミティブな配列のラッパーである。パフォーマンス上の問題でもないかぎり、基本的には Java との相互運用性の維持のためだけに使用すべきである。したがって、ここでは取り上げない。
+
+`List<T>` は、シーケンスである。複数の値を順序を維持したまま保持し、配列の代替として使用できる。`listOf()` メソッドを使って初期化できる。  
+各要素にアクセスするには、`get()` メソッドに添字を渡すか、配列と同様に `リスト[添字]` のようにすることもできる。
 
 ```kotlin
-val list = listOf("Apple", "Orange", "Grape")
+val list: List<String> = listOf("Apple", "Orange", "Grape")
+
+// "[Apple, Orange, Grape]"
+println(list)
+```
+
+`Set<T>` は、集合である。Set は、順序を保証せず、また重複を許容しない。`setOf()` メソッドを使って初期化できる。
+
+```kotlin
+val set: Set<String> = setOf("Apple", "Orange", "Apple", "Grape")
+
+// "[Apple, Orange, Grape]"
+println(set)
+```
+
+`Map<K, V>` は、連想配列である。当然 順序は保証されず、また Key の重複を許容しない。`mapOf` メソッドに複数の `Pair<K, V>` オブジェクトを渡すことで初期化できる。  
+Pair オブジェクトは、`Pair('A', "ABC")` のように生成することもできるし、`'A' to "ABC"` という糖衣構文も用意されている。
+
+```kotlin
+val map: Map<Char, String> = mapOf(
+    'A' to "Apple",
+    'B' to "Orange",
+    'C' to "Grape"
+)
+
+// "{A=Apple, B=Orange, C=Grape}"
+println(map)
 ```
 
 ---
@@ -342,61 +479,6 @@ println(
 
 ---
 
-### 型システム
-
-Kotlin の基底型 (basic types) は、基本的に Java のそれに準拠する。
-
-Java では、もともとは `int` などの基底型のみがプリミティブ型として特別扱いを受けていたのだが、これらをそのままオブジェクト指向に取り入れることができなかったため、ラッパーとして `Integer` などのオブジェクトが追加された。  
-このため、たとえば、整数型の変数を宣言するときは `int a = 0;` と書けるが、整数型の List を宣言するときは `List<Integer>` と書かなければならないなどのギャップが生じてしまった。
-
-いっぽう、Kotlin ではすべての型が純粋なオブジェクトであるため、このような問題は起こらない。
-
-実は Java の配列もプリミティブなものであるのだが、それも `Array<T>` 型としてラップされているので安心。もっとも、通常は List を使うべきである。
-
-すべての Non-null な型およびクラスは、`Any` 型を暗黙的に継承する。  
-また、すべての Nullable な型およびクラスは、`Any?` 型を暗黙的に継承する。
-
-これとは対照的に、すべての Non-null な型およびクラスは、`Nothing` 型へ暗黙的に派生する。  
-また、すべての Nullable な型およびクラスは、`Nothing?` 型へ暗黙的に派生する。
-
----
-
-### Nothing の必要性
-
-俗にトップ タイプと呼ばれる Any はともかく、なぜボトム タイプである Nothing が必要なのかについて。
-
-たとえば、2つの整数 a と b を受け取り、a を b で除算する関数を考えてみる。ここで、b が0であった場合は、例外をスローする。
-
-```kotlin
-fun devide(a: Int, b: Int): Int =
-    if (b != 0)
-        a / b
-    else
-        throw ArithmeticException()
-```
-
-devide() は Int 型の値を返すと明記してあるのだから、本来であれば、返しうるすべての値が Int かその派生型でなければコンパイルは通らないはずである。  
-実際、Java でこれと同じコードを書いた場合は、例外をスローする経路は特別に型チェックをパスするようになっている。
-
-しかし、Kotlin にはすべての派生型である Nothing がある。  
-Java で生じた問題を解決するために、Kotlin の throw 式は Nothing を返すようになっている。Nothing は Int の派生型でもあるので、これならば型システム上なにも問題はない。
-
-また、たとえば「関数名や引数、返り値の型などは決まっているがまだ実装していない、しかしテストのためにとりあえずコンパイルを通したい」というようなケースが往々にして存在する。  
-Kotlin では、このケースに対する自然な解決策として `TODO()` メソッドを提供する。
-
-```kotlin
-// OK!
-fun placeholderFunc(a: Int, b: String): Int = TODO()
-
-// Runtime Error!
-val s = placeholderFunc(10, "ABC")
-```
-
-TODO() は、常に Nothing を返すメソッドである。Nothing はあらゆる型の派生型であるので、とりあえずこれを入れておけば、是非はともかく、コンパイルは通すことができる。  
-当然だが、例にもあるように、この関数を呼び出そうとすると NotImplementedError がスローされるので注意。
-
----
-
 ### クラス
 
 Kotlin の場合、`class クラス名 constructor(va(l|r) パラメーター名1: パラメーターの型1, ...)` のようにしてプライマリ コンストラクターとそのパラメーターを定義できる。ここで、一部のケースを除いて `constructor` キーワードは省略できる。  
@@ -519,15 +601,84 @@ val posNum2 = PositiveNum(10)
 
 ---
 
-### 継承 (WIP)
+### ジェネリクス
 
-当然、Kotlin はクラスの継承をサポートしている。  
-任意のクラスを継承するには、クラス宣言のうしろに `: クラス名()) を記述する。
+Kotlin も当然、ジェネリクスによる多態性 (polymorphism) をサポートしている。  
+Java と同様に、クラスや関数に総称型 T を指定することができ、また型パラメーター `<型>` を渡すことができる。
 
 ```kotlin
-class Fruit()
+class Sample<T>(val value: T)
 
-class 
+val sample1 = Sample<String>("ABC")
+val sample2 = Sample("ABC")    // 型が推論されるので型パラメーターを省略できる
+```
+
+Kotlin の総称型は、Java のようにすべてが不変 (この「不変」は「可変/不変」の不変ではなく、「不変/共変/反変」の不変である) ではなく、一定の制限のもとで、共変 (派生型も許容する) および反変 (基本型も許容する) とすることができる。
+
+不変とする場合は、通常どおり `<T>` と書く。
+
+```kotlin
+class Sample<T> {
+    fun sampleFunc1(): T = TODO()               // OK!
+    fun sampleFunc2(value: T): Unit = TODO()    // OK!
+}
+
+// Compile Error! 不変なので Any に String は入らない
+val strSample: Sample<String>
+val sample1: Sample<Any> = strSample
+
+// Compile Error! 不変なので String に Any は入らない
+val anySample: Sample<Any>
+val sample2: Sample<String> = anySample
+```
+
+共変とする場合は、`<out T>` と書く。このとき、T は所属するメソッドの返り値の型としてしか使用できない。
+
+```kotlin
+class Sample<out T> {
+    fun sampleFunc1(): T = TODO()               // OK!
+    fun sampleFunc2(value: T): Unit = TODO()    // Compile Error! <out T> な型は引数に使えない
+}
+
+// OK! 共変なので Any に String は入る
+val strSample: Sample<String>
+val sample1: Sample<Any> = strSample
+
+// Compile Error! 不変なので String に Any は入らない
+val anySample: Sample<Any>
+val sample2: Sample<String> = anySample
+```
+
+反変とする場合は、`<in T>` と書く。このとき、T は所属するメソッドの引数の型としてしか使用できない。
+
+```kotlin
+class Sample<T> {
+    fun sampleFunc1(): T = TODO()               // Compile Error! <in T> な型は返り値に使えない
+    fun sampleFunc2(value: T): Unit = TODO()    // OK!
+}
+
+// Compile Error! 不変なので Any に String は入らない
+val strSample: Sample<String>
+val sample1: Sample<Any> = strSample
+
+// OK! 反変なので String に Any は入る
+val anySample: Sample<Any>
+val sample2: Sample<String> = anySample
+```
+
+---
+
+### 継承 (WIP)
+
+Kotlin では、すべてのクラスがデフォルトで final である。継承させたいクラスは、`open` キーワードを付与する。  
+open なクラスを継承するには、クラス宣言のうしろに `: クラス名()` を記述する。
+
+また、デフォルトではすべてのメソッドがオーバーライドすることができない。オーバーライドさせたいメソッドは、`open` キーワードを付与する。
+
+```kotlin
+open class Fruit(price: UInt)
+
+class Apple
 ```
 
 ---
