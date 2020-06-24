@@ -795,7 +795,7 @@ val gender: Gender = Gender.FEMALE
 また、enum class そのものは、フィールドやメンバを持つ通常のクラスのように使うことができる。加えて、abstract なメソッドを定義して、各パラメーターごとにオーバーライドすることもできる。
 
 ```kotlin
-enum class Gender(value: Int) {
+enum class Gender(val value: Int) {
     MALE(1) {
         override fun print(): Unit =
             println("Male")
@@ -809,14 +809,38 @@ enum class Gender(value: Int) {
     OTHER(9) {
         override fun print(): Unit =
             println("Other")
-    },
+    };
 
     abstract fun print(): Unit
 }
 
 val gender = Gender.FEMALE
-gender.print()              // "Female"
-println(gender.rawValue())  // "2"
+
+gender.print()          // "Female"
+println(gender.value()) // "2"
 ```
 
 列挙体では、enum class そのものは通常のクラスのように PascalCase、各フィールドは CONSTANCE_CASE で命名する。
+
+### 値から列挙値への変換
+
+列挙体のインスタンスから値を取り出すことは簡単にできるが、値から列挙体のインスタンスへ変換するには、自分でメソッドを定義しておくしかない。
+
+enum class は、内包するすべてのパラメーターを配列として取り出せる `values()` メソッドを持っている。  
+また、`firstOrNull()` メソッドを使えば、条件に合致する要素を null-safety に取り出すことができる。
+
+```kotlin
+enum class Gender(val value: Int) {
+    MALE(1),
+    FEMALE(2),
+    OTHER(9);
+
+    companion object {
+        fun fromInt(value: Int): Gender? =
+            values().firstOrNull { it.value == value }
+    }
+}
+
+println(Gender.fromInt(2))      // "FEMALE"
+println(Gender.fromInt(999))    // "null"
+```
