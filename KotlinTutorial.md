@@ -157,6 +157,8 @@ Kotlin の基底型 (basic types) は次のとおり。
 | Char    | Unicode 文字       | `'A'`                |
 | String  | Unicode 文字列     | `"ABC"`              |
 
+標準ライブラリとして `UInt`、`UByte` などの符号なし整数型も提供されているが、特別な事情でもない限り使わないほうがいいだろう。
+
 整数リテラルでは、2進表記 (`0bXXXX`) と16進表記 (`0xXXXX`) が使用できる。また、途中のアンダースコアは無視されるため、区切り文字として使用できる。  
 浮動小数点数リテラルでは、指数表記 (`X.XXeXX`) が使用できる。
 
@@ -613,7 +615,8 @@ val sample1 = Sample<String>("ABC")
 val sample2 = Sample("ABC")    // 型が推論されるので型パラメーターを省略できる
 ```
 
-Kotlin の総称型は、Java のようにすべてが不変 (この「不変」は「可変/不変」の不変ではなく、「不変/共変/反変」の不変である) ではなく、一定の制限のもとで、共変 (派生型も許容する) および反変 (基本型も許容する) とすることができる。
+Kotlin の総称型は、Java のようにすべてが不変 (この「不変」は「可変/不変」の不変ではなく、「不変/共変/反変」の不変である) ではなく、一定の制限のもとで、共変 (派生型も許容する) および反変 (基本型も許容する) とすることができる。  
+もっとも、あまり使うものでもないので読み飛ばしてもらってかまわない。
 
 不変とする場合は、通常どおり `<T>` と書く。
 
@@ -673,12 +676,48 @@ val sample2: Sample<String> = anySample
 Kotlin では、すべてのクラスがデフォルトで final である。継承させたいクラスは、`open` キーワードを付与する。  
 open なクラスを継承するには、クラス宣言のうしろに `: クラス名()` を記述する。
 
-また、デフォルトではすべてのメソッドがオーバーライドすることができない。オーバーライドさせたいメソッドは、`open` キーワードを付与する。
+また、デフォルトではすべてのメソッドがオーバーライドすることができない。オーバーライドさせたいメソッドは、`open` キーワードを付与する。  
+もちろん、本体では実装を持たず、派生クラスで実装させたい (抽象メソッド) ときは `abstract` キーワードが使用できる。
 
 ```kotlin
-open class Fruit(price: UInt)
+open class Fruit(price: Int) {
+    fun normalFunc(): Unit = TODO()
+    open fun overridableFunc(): Unit = TODO()
+    abstract fun virtualFunc(): Unit = TODO()
+}
 
-class Apple
+// Compile Error! abstract なメソッドは実装しなければならない
+class Apple(price: Int): Fruit(price) {
+    // Compile Error! open でないのでオーバーライドできない
+    override fun normalFunc(): Unit = TODO()
+
+    // OK!
+    override fun overridableFunc(): Unit = TODO()
+}
+```
+
+---
+
+### インターフェース
+
+Kotlin は Java と同様に多重継承をサポートしていないが、インターフェースによるミックスインをサポートしている。
+
+インターフェースは `interface` キーワードを使用して宣言される。  
+実装を持たないメソッドはすべて abstract 扱いとなる。逆にいえば、実装があれば普通のメソッド扱いとなり、明示的に `open` を指定しなければオーバーライドできない。
+
+```kotlin
+interface A {
+    fun foo(): Unit
+}
+
+interface B {
+    fun bar(): Unit
+}
+
+class AB: A, B {
+    override fun foo(): Unit = TODO()
+    override fun bar(): Unit = TODO()
+}
 ```
 
 ---
