@@ -876,13 +876,13 @@ enum class Gender(val value: Int) {
     OTHER(9);
 
     companion object {
-        fun fromInt(value: Int): Gender? =
+        operator fun invoke(value: Int): Gender? =
             values().firstOrNull { it.value == value }
     }
 }
 
-println(Gender.fromInt(2))      // "FEMALE"
-println(Gender.fromInt(999))    // "null"
+println(Gender(2))      // "FEMALE"
+println(Gender(999))    // "null"
 ```
 
 ### 例外処理
