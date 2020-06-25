@@ -481,6 +481,46 @@ println(
 
 ---
 
+### キャスト
+
+Kotlin では、is 演算子によって型を判定することができる。  
+if 式や when 式を使用して型判定を行うと、そのスコープ内にかぎり、暗黙的にキャストが行われる (スマート キャスト)。
+
+```kotlin
+val obj: Any = "Hello!"
+
+println(obj.length)     // Compile Error! Any 型は length プロパティを持っていない
+
+if (obj is String)
+    println(obj.length) // OK! obj は暗黙的に String 型にキャストされている
+else
+    println(obj.length) // Compile Error!
+
+if (obj !is String)
+    println(obj.length) // Compile Error!
+else
+    println(obj.length) // OK!
+
+when (obj) {
+    is Int -> println(obj + 10)         // OK! (ただし Runtime Error にはなる)
+    is String -> println(obj.length)    // OK!
+}
+```
+
+また、アンセーフ キャスト演算子 `as` によって明示的に型をキャストすることができる。ただし、キャストに失敗したときに ClassCastException がスローされるため、安全でない。  
+したがって、基本的にはセーフ キャスト演算子 `as?` を使用するべきである。`as?` は、Nullable な型へキャストし、もしキャストに失敗したときは null を返す。
+
+```kotlin
+val obj: Any = "Hello!"
+
+val castedObj1: Int = obj as Int    // Runtime Error!
+val castedObj2: Int? = obj as? Int  // OK!
+
+println(castedObj)  // "null"
+```
+
+---
+
 ### クラス
 
 Kotlin の場合、`class クラス名 constructor(va(l|r) パラメーター名1: パラメーターの型1, ...)` のようにしてプライマリ コンストラクターとそのパラメーターを定義できる。ここで、一部のケースを除いて `constructor` キーワードは省略できる。  
@@ -843,4 +883,65 @@ enum class Gender(val value: Int) {
 
 println(Gender.fromInt(2))      // "FEMALE"
 println(Gender.fromInt(999))    // "null"
+```
+
+### 例外処理
+
+Kotlin にも try-catch-finally は存在しているが、その代替として使用できる `Result<T>` が用意されている。
+
+Result\<T> は、T 型の返り値または Throwable のどちらかを内包する型である。すなわち、任意の例外をスローする可能性のある関数において、処理が滞りなく成功すれば T 型の値が、処理に失敗して例外がスローされればその Throwable オブジェクトが、この Result\<T> に格納される。
+
+Result\<T> には、成功 (success) したか失敗 (failure) したかに応じて処理を行うメソッドが豊富に用意されている。
+
+`Result.success(10)`、`Result.failure(RuntimeException())` のようにして明示的に成功/失敗時の Result\<T> を生成することもできるが、`tunCatching {}` メソッドを使用して例外をスローする可能性のあるメソッドを包むことにより、その実行結果が Result\<T> として返ってくる。
+
+`getOrDefault()` は、`?:` 演算子と似ており、Success ならそのまま、Failure なら同じ型の任意の値を返す。  
+`map {}` は `?.` と似ているもので、もし Success ならその値をラムダ式で変換し、Failure ならそのままにして、また Result\<T> に包み直して返す。map と逆のはたらきをするものが `recover {}` だ。`fold {}` なら、Success と Failure とで別のラムダ式 (返り値の型は同一) を適用させ、ついでに Result\<T> を外してくれる。  
+また、成功時/失敗時にのみ、値を返さずにその場で任意の処理を行いたいときには `onSuccess {}` と `onFailure {}` が使用できる。
+
+```kotlin
+fun devide(a: Int, b: Int): Int =
+    if (b != 0)
+        a / b
+    else
+        throw ArithmeticException()
+
+val resultS: Result<Int> = runCatching { devide(10, 2) }    // Result.success(5)
+val resultF: Result<Int> = runCatching { devide(10, 0) }    // Result.failure(ArithmeticException())
+
+println(resultS.getOrDefault(999))  // "5"
+println(resultF.getOrDefault(999))  // "999"
+
+println(resultS.map { (it * 10).toDouble() })   // "50.0"
+println(resultF.map { (it * 10).toDouble() })   // "java.lang.ArithmeticExeption"
+
+println(resultS.recover { "Failure!!!" })   // "5"
+println(resultS.recover { "Failure!!!" })   // "Failure!!!"
+
+// "50"
+println(
+    resultS.fold(
+        onSuccess = {
+            it * 10
+        },
+        onFailure = {
+            999
+        }
+    )
+)
+
+// "999"
+println(
+    resultF.fold(
+        onSuccess = {
+            it * 10
+        },
+        onFailure = {
+            999
+        }
+    )
+)
+
+resultS.onSuccess { println(it) }   // "5"
+resultF.onSuccess { println(it) }   // 評価されない
 ```
