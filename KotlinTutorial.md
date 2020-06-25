@@ -124,8 +124,8 @@ Nullable なオブジェクトを Non-null なオブジェクトに変換する�
 val a: String? = "Hello"
 val b: String? = null
 
-println(a.length ?: -1) // "5"
-println(b.length ?: -1) // "-1"
+println(a?.length ?: -1) // "5"
+println(b?.length ?: -1) // "-1"
 ```
 
 `!!` 演算子は、`Nullableオブジェクト!!` のようにして使用する。これは積極的に使うべきでない手法で、強制的に Nullable を Non-null へ変換する。  
