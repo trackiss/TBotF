@@ -453,10 +453,10 @@ println(
 ```kotlin
 println(
     when (val a = readLine()!!.toInt()) {
-        is 1 -> "1"
-        is 2 -> "2"
-        is in 3..5 -> "3～5"
-        is in 6..10 -> "6～10"
+        1 -> "1"
+        2 -> "2"
+        in 3..5 -> "3～5"
+        in 6..10 -> "6～10"
         else -> "それ以外"
     }
 )
