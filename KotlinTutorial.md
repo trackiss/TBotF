@@ -711,7 +711,7 @@ val sample2: Sample<String> = anySample
 
 ---
 
-### 継承 (WIP)
+### 継承
 
 Kotlin では、すべてのクラスがデフォルトで final である。継承させたいクラスは、`open` キーワードを付与する。  
 open なクラスを継承するには、クラス宣言のうしろに `: クラス名()` を記述する。
