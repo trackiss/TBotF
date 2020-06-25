@@ -891,13 +891,13 @@ Kotlin にも try-catch-finally は存在しているが、その代替として
 
 Result\<T> は、T 型の返り値または Throwable のどちらかを内包する型である。すなわち、任意の例外をスローする可能性のある関数において、処理が滞りなく成功すれば T 型の値が、処理に失敗して例外がスローされればその Throwable オブジェクトが、この Result\<T> に格納される。
 
-Result\<T> には、成功 (success) したか失敗 (failure) したかに応じて処理を行うメソッドが豊富に用意されている。
-
 `Result.success(10)`、`Result.failure(RuntimeException())` のようにして明示的に成功/失敗時の Result\<T> を生成することもできるが、`tunCatching {}` メソッドを使用して例外をスローする可能性のあるメソッドを包むことにより、その実行結果が Result\<T> として返ってくる。
+
+Result\<T> には、成功 (success) したか失敗 (failure) したかに応じて処理を行うメソッドが豊富に用意されている。
 
 `getOrDefault()` は、`?:` 演算子と似ており、Success ならそのまま、Failure なら同じ型の任意の値を返す。  
 `map {}` は `?.` と似ているもので、もし Success ならその値をラムダ式で変換し、Failure ならそのままにして、また Result\<T> に包み直して返す。map と逆のはたらきをするものが `recover {}` だ。`fold {}` なら、Success と Failure とで別のラムダ式 (返り値の型は同一) を適用させ、ついでに Result\<T> を外してくれる。  
-また、成功時/失敗時にのみ、値を返さずにその場で任意の処理を行いたいときには `onSuccess {}` と `onFailure {}` が使用できる。
+また、forEach のように、Success 時または Failure 時にのみ、値を返さずにその場で任意の処理を行いたいときには `onSuccess {}` と `onFailure {}` が使用できる。
 
 ```kotlin
 fun devide(a: Int, b: Int): Int =
@@ -916,7 +916,7 @@ println(resultS.map { (it * 10).toDouble() })   // "50.0"
 println(resultF.map { (it * 10).toDouble() })   // "java.lang.ArithmeticExeption"
 
 println(resultS.recover { "Failure!!!" })   // "5"
-println(resultS.recover { "Failure!!!" })   // "Failure!!!"
+println(resultF.recover { "Failure!!!" })   // "Failure!!!"
 
 // "50"
 println(
