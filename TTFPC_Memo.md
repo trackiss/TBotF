@@ -21,21 +21,79 @@
 
 のちに、超大手ファウンダリの Monotype に買収された。
 
-### Aldine 401 (Monotype Bembo, ベンボ)
+## セリフ体の一例
 
-印刷業において世界ではじめて商業的に成功したとされるアルドゥス・マヌティウスのもとで働いていたフランチェスコ・グリフォが制作した書体をベースにしたセリフ体。
+### Aldine 401, オルダイン401 (Monotype Bembo, ベンボ)
 
-### Aldine 721 (Monotype Plantin, プランタン)
+印刷業において世界ではじめて商業的に成功したとされる Aldus Manutius のもとで働いていた Francesco Griffo が制作した書体をベースにした書体。
 
-Monotype のオリジナル セリフ体。印刷品質の向上によりインクの広がりが抑えられるようになったことに着目し、従来よりもやや太めのウェイトを採用、新しいジャンルの開拓に成功した。
+### Aldine 721, オルダイン721 (Monotype Plantin, プランタン)
+
+Monotype のオリジナル書体。印刷品質の向上によりインクの広がりが抑えられるようになったことに着目し、従来よりもやや太めのウェイトを採用、新しいジャンルの開拓に成功した。
 
 ### Baskerville, バスカービル
 
-John Baskerville が設計し、本の表紙などに映えるやや野心的なフォルムが受け、広く使われたセリフ体。Microsoft Windows にも標準でバンドルされている。
+John Baskerville が設計し、本の表紙などに映えるやや野心的なフォルムが受け、広く使われた書体。Microsoft Windows にも標準でバンドルされている。
 
-### Bauer Bodoni (バウアー ボドニ)
+### Bauer Bodoni, バウアー ボドニ
 
-非常に有名な書体である Bodoni の派生。Bodoni の開発時期は古いながらも、その幾何学的でモダンな形状は従来と一線を画しており、今なおモダン系セリフ体の頂点の名を欲しいままにしている。  
-Bauer Bodoni は、ドイツの型鋳造所 Bauer Type Foundry が Bodoni をリバイバルした書体である。通常の Bodoni に比べて、太線と細線の差がさらに強調されている。
+ドイツの Bauer Type Foundry が、後述する Bodoni をリバイバルした書体。通常の Bodoni に比べて、太線と細線の差がさらに強調されている。
 
+### Bodoni, ボドニ
 
+非常に有名な書体。開発時期は古いながらも、その幾何学的でモダンな形状は従来と一線を画しており、いわゆる Didone 系フォントの代表格である。
+
+### Bookman, ブックマン
+
+Bookman Old Style と呼ばれることもある。  
+イギリスの Miller & Richard の Old Style をもとに、より大胆にスラブ系の特徴づけを行ったフォントで、本文よりもデザイン向け。
+
+### Candida, カンジダ
+
+ドイツの Ludwig & Mayer がリリースした書体。オールドチックな形状と現代的なウェイト、そして特徴的なセリフが特徴。
+
+### Caslon Old face, キャスロン オールド フェイス
+
+伝統的な形状と手書きのような有機感を併せ持つオールドスタイル フォントとして有名な Caslon のうち、その初期のデザインを H.W. Caslon & Sons がみずから復刻した書体。
+
+### Century Expanded, センチュリー エクスパンデッド
+
+American Type Founders による超有名フォント Century の太字版。
+
+### Century SchoolBook, センチュリー スクールブック
+
+教科書でも読みやすいようにストロークや文字間隔が調整された Century。
+
+### Charter, チャーター
+
+Bitstream オリジナル書体。トランジショナル系とスラブ系の両方の要素を併せ持っており、のちにフリーフォント化されたことで有名。
+
+### Cheltenham, チェルテンハム
+
+Ingalls Kimball と、著名な教会建築家である Bertram Goodhue が見出し用途として制作した書体。  
+19世紀にはいって Futura のような幾何学的なサンセリフ書体が流行するまで、見出しフォントの代表格であった。
+
+### Clarendon, クラレンドン
+
+ロンドンの Thorowgood and Co. がリリースしたスラブ系書体。スラブ系の特徴が非常に大胆に押し出されており、スラブ系書体の代表格と言われることも。
+
+### Classical Garamond, クラシカル ギャラモン (Monotype Sabon, サボン)
+
+パリの彫刻家 Claude Garamond にちなんで名付けられた超有名フォント Garamond をもとに、Monotype や Linotype などが共同で開発した書体。
+
+### Cooper, クーパー
+
+アメリカの Barnhart Brothers & Spindler がリリースし、American Type Founders が販売した書体。  
+とりわけ、70年代を象徴するタイプフェイスとまで言われる極太ウェイトの Cooper Black は非常に有名。URW がデジタル化したものが Microsoft Windows にバンドルされている。
+
+### Copperplate Gothic, コッパープレート ゴシック
+
+Frederic Goudy が設計した見出し用書体。その重厚なウェイトとわずかなセリフによって生じる高級感から、パッケージなどによく使用される。
+
+### Dutch 801, ダッチ801 (Linotype Times, タイムズ)
+
+### Dutch 823, ダッチ823 (Linotype Aster, アステル)
+
+### Egyptian 505, エジプシャン505
+
+### Elegant Garamond, エレガント ギャラモン (Linotype Granjon, グランジョン)
