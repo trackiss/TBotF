@@ -93,8 +93,8 @@ val foo2 = new Foo
 val bar1 = new foo1.Bar
 val bar2 = new foo2.Bar
 
+foo1 hoge bar1  // OK!
 foo1 hoge bar2  // OK!
-foo2 hoge bar1  // OK!
 ```
 
 こうすることで、インスタンスではなくクラスに依存したクラス内クラスの型を表現することができる。
