@@ -50,12 +50,11 @@ val tsplus = ts map {
 
 <br>
 
-### クラス内クラスを別インスタンスでも型解決できるようにしたいとき (\# シャープ)
+### クラス内クラスをインスタンス依存ではなくクラス依存としたいとき (\# シャープ)
 
 ```scala
 class Foo {
   class Bar
-  val bar = new Bar
 
   def hoge(bar: Bar): Unit = ???
 }
@@ -67,20 +66,23 @@ class Foo {
 val foo1 = new Foo
 val foo2 = new Foo
 
-foo1 hoge foo2.bar  // エラー！
+val bar1 = new foo1.Bar
+val bar2 = new foo2.Bar
+
+foo1 hoge bar1  // OK!
+foo1 hoge bar2  // Error!
 ```
 
-型の不一致である。  
+型の不一致だ。  
 なぜなら、`foo1.hoge()` が求めているのはあくまで `foo1.Bar` であり、`foo2.Bar` ではないからである。  
 もちろん逆も同じで、`foo2.hoge()` は `foo2.Bar` を求めている。
 
-要するに、クラス内クラスの型同一性はあくまでそのインスタンスのスコープ内に限られているということである。  
+要するに、クラス内クラスの型というのは、その外側のクラスの型ではなくインスタンスに依存しているのである (だから、たとえば `val bar = new Foo.Bar` みたいなことはできない)。たとえ宣言は同じでも、別のインスタンスであればそれは別の型として扱われる。  
 これをどうにかするために、`#` という記号が Scala にはある:
 
 ```scala
 class Foo {
   class Bar
-  val bar = new Bar
 
   def hoge(bar: Foo#Bar): Unit = ???
 }
@@ -88,7 +90,11 @@ class Foo {
 val foo1 = new Foo
 val foo2 = new Foo
 
-foo1 hoge foo2.bar
+val bar1 = new foo1.Bar
+val bar2 = new foo2.Bar
+
+foo1 hoge bar2  // OK!
+foo2 hoge bar1  // OK!
 ```
 
-こうすることで、クラス内クラスの同一性はインスタンスではなくクラスに依存するようになる。
+こうすることで、インスタンスではなくクラスに依存したクラス内クラスの型を表現することができる。
